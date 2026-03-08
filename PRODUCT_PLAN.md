@@ -162,10 +162,10 @@ Penalties:
     - `Maps+Model.swift`
     - `Maps+Repository.swift` (if needed)
     - `Views/` (supporting views, if needed)
-  - `Settings`
-    - `Settings+View.swift`
-    - `Settings+Model.swift`
-    - `Settings+Repository.swift` (if needed)
+  - `Planner`
+    - `Planner+View.swift`
+    - `Planner+Model.swift`
+    - `Planner+Repository.swift` (if needed)
     - `Views/` (supporting views, if needed)
   - `RideHistory`
     - `RideHistory+View.swift`
@@ -184,7 +184,7 @@ Penalties:
 - `Repository`: data access abstraction (local storage and map/routing provider adapters), consumed only by models.
 - DI scope: use `Factory` for repositories and shared sessions; do not register feature models in DI.
 - Registration rule: declare `Factory` registration in the same file as concrete implementation.
-- Module boundary rule: no direct cross-feature dependencies (e.g., `Maps` must not depend on `Settings`).
+- Module boundary rule: no direct cross-feature dependencies (e.g., `Maps` must not depend on `Planner`).
 - Cross-feature communication: only through shared `Data/Sessions` or notifications.
 
 ### 6.3 Protocol-first provider abstraction
@@ -253,7 +253,7 @@ Backlog:
 - Implement HomeMapScreen with MapKit baseline.
 - Implement PlannerBottomSheet with options/state.
 - Implement start point modes UI (current/manual placeholder wiring).
-- Add Settings persistence for planner defaults (duration=60).
+- Add Planner persistence for planner defaults (duration=60).
 
 DoD:
 - App runs with map-first home + functional planner sheet.
