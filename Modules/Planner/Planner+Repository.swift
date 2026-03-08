@@ -2,17 +2,17 @@ import Foundation
 import Factory
 
 extension Container {
-  var settingsRepository: Factory<SettingsRepositoryProtocol> {
-    self { InMemorySettingsRepository() }.singleton
+  var plannerRepository: Factory<PlannerRepositoryProtocol> {
+    self { InMemoryPlannerRepository() }.singleton
   }
 }
 
-protocol SettingsRepositoryProtocol {
+protocol PlannerRepositoryProtocol {
   func loadPreferredStartPointSummary() -> String
   func savePreferredStartPointSummary(_ summary: String)
 }
 
-final class InMemorySettingsRepository: SettingsRepositoryProtocol {
+final class InMemoryPlannerRepository: PlannerRepositoryProtocol {
   private var preferredStartPointSummary: String = "Current location"
 
   func loadPreferredStartPointSummary() -> String {

@@ -21,7 +21,7 @@ Create:
   - `FoundationKit`
   - `Data`
   - `Maps`
-  - `Settings`
+  - `Planner`
 
 ### 1.2 Suggested folder tree
 ```text
@@ -59,16 +59,16 @@ CurvyRide/
       Views/
         HomeMapView.swift
         StartPointPickerView.swift
-    Settings/
-      Settings+View.swift
-      Settings+Model.swift
-      Settings+Repository.swift
+    Planner/
+      Planner+View.swift
+      Planner+Model.swift
+      Planner+Repository.swift
       Views/
         PlannerSheetView.swift
   Tests/
-    SettingsTests/
+    PlannerTests/
       PlannerViewModelTests.swift
-      SettingsRepositoryTests.swift
+      PlannerRepositoryTests.swift
     MapsTests/
       MapsModelTests.swift
 ```
@@ -91,7 +91,7 @@ Implement:
   - Feature models are not created in app root/container.
   - `Feature+View.swift` owns `@StateObject` model lifecycle.
   - `Feature+Model.swift` injects dependencies via `@Injected`/`@LazyInjected`.
-  - Keep module boundaries strict: no direct `Maps <-> Settings` imports/dependencies.
+  - Keep module boundaries strict: no direct `Maps <-> Planner` imports/dependencies.
   - Cross-feature communication only via shared session(s) or notifications.
 
 Acceptance:
@@ -99,12 +99,11 @@ Acceptance:
 
 ### 2.2 Map-first home screen
 Implement:
-- `Maps+View.swift` and `Views/HomeMapView.swift`:
+- `Maps+View.swift`:
   - `Map` (MapKit) full screen.
   - Planner open button (floating action).
-  - Present planner bottom sheet.
+  - Present planner bottom sheet using `Planner+View.swift`.
 - `Maps+Model.swift`:
-  - UI state for planner visibility.
   - Selected start point summary placeholder.
 
 Acceptance:
@@ -113,7 +112,7 @@ Acceptance:
 
 ### 2.3 Planner bottom sheet shell
 Implement:
-- `Settings+Model.swift` with fields:
+- `Planner+Model.swift` with fields:
   - `durationMinutes: Int` (default `60`)
   - `distanceLimitKm: Int?` (default `nil`)
   - `isLoopRoute: Bool`
@@ -122,14 +121,14 @@ Implement:
   - `avoidTolls: Bool`
   - `isSurpriseMe: Bool`
   - `startPointMode: StartPointMode`
-- `StartPointMode` enum (inside `Settings+Model.swift`):
+- `StartPointMode` enum (inside `Planner+Model.swift`):
   - `.currentLocation`
   - `.pickOnMap`
   - `.searchPlace`
-- `Settings+Model.swift`:
+- `Planner+Model.swift`:
   - Mutations for all toggles/values.
   - Load/save state via repository.
-- `Settings+View.swift` and `Views/PlannerSheetView.swift`:
+- `Planner+View.swift` and `Views/PlannerSheetView.swift`:
   - Controls for all v1 planner options (UI only).
   - Start point mode segmented control or list.
 
@@ -137,9 +136,9 @@ Acceptance:
 - Planner options can be changed.
 - Closing/reopening sheet keeps current state during app session.
 
-### 2.4 Settings persistence
+### 2.4 Planner persistence
 Implement:
-- `Settings+Repository.swift` protocol:
+- `Planner+Repository.swift` protocol:
   - `loadPlannerState() async -> PlannerState`
   - `savePlannerState(_ state: PlannerState) async`
 - `UserDefaultsStore.swift` abstraction wrapper.
@@ -163,10 +162,10 @@ Acceptance:
 
 1. Create Xcode project and module targets.
 2. Add `FoundationKit` + `DesignSystem` primitives.
-3. Implement `Data` storage and `SettingsRepository`.
-3. Implement `Data` storage and `Settings+Repository`.
-4. Implement `Settings+Model` and planner state handling.
-5. Implement `Maps` home screen and `Settings` planner sheet presentation.
+3. Implement `Data` storage and `PlannerRepository`.
+3. Implement `Data` storage and `Planner+Repository`.
+4. Implement `Planner+Model` and planner state handling.
+5. Implement `Maps` home screen and `Planner` planner sheet presentation.
 6. Wire repository/session DI with `Factory` and keep model lifecycle in feature views.
 7. Add tests.
 8. Run build + tests + manual smoke check.
@@ -179,39 +178,39 @@ Acceptance:
 - [ ] Set deployment target iOS 17+.
 
 ### 4.2 Domain/UI models
-- [ ] Add `Settings+Model` with `PlannerState`.
+- [ ] Add `Planner+Model` with `PlannerState`.
 - [ ] Add `StartPointMode` in feature model file.
 - [ ] Add `LoadableState` helper (if needed for async loading).
 
 ### 4.3 Repository and storage
-- [ ] Add `Settings+Repository` protocol.
+- [ ] Add `Planner+Repository` protocol.
 - [ ] Add `UserDefaultsStore`.
-- [ ] Add `Data` implementation of settings repository.
+- [ ] Add `Data` implementation of planner repository.
 - [ ] Add serialization keys and migration-safe default mapping.
 
 ### 4.4 ViewModels
-- [ ] Add planner state holder in `Settings+Model` with `@Published state`.
+- [ ] Add planner state holder in `Planner+Model` with `@Published state`.
 - [ ] Add `load()` and `save()` lifecycle methods.
 - [ ] Add map screen state holder in `Maps+Model`.
 
 ### 4.5 Views
-- [ ] Add `Maps+View`/`HomeMapView` with full-screen map.
+- [ ] Add `Maps+View` with full-screen map.
 - [ ] Add floating planner button.
-- [ ] Add `Settings+View`/`PlannerSheetView` controls.
+- [ ] Add `Planner+View`/`PlannerSheetView` controls.
 - [ ] Add start point mode picker component.
 
 ### 4.6 DI and composition
 - [ ] Register repositories/sessions with `Factory` in implementation files.
 - [ ] Keep `@StateObject` model creation in each `Feature+View.swift`.
 - [ ] Inject repository/session dependencies inside `Feature+Model.swift`.
-- [ ] Enforce no direct cross-feature dependencies (`Maps` must not depend on `Settings`).
+- [ ] Enforce no direct cross-feature dependencies (`Maps` must not depend on `Planner`).
 
 ### 4.7 Testing
-- [ ] `SettingsModelTests`:
+- [ ] `PlannerModelTests`:
   - default state on first launch
   - toggle mutations
   - persistence roundtrip
-- [ ] `SettingsRepositoryTests`:
+- [ ] `PlannerRepositoryTests`:
   - decode fallback defaults when storage empty/corrupt
   - save/load consistency
 - [ ] `MapsModelTests`:
@@ -220,7 +219,7 @@ Acceptance:
 ## 5. Test Matrix (Sprint 1)
 
 Unit tests:
-- `SettingsModel` initializes with defaults.
+- `PlannerModel` initializes with defaults.
 - Changing `durationMinutes` updates state.
 - Changing `startPointMode` is persisted and restored.
 - `distanceLimitKm` handles `nil` correctly.

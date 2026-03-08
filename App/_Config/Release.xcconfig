@@ -1,0 +1,12 @@
+// App identity
+APP_NAME = Curvy Ride
+APP_CUSTOM_SCHEME = curvyride
+APP_GROUP =
+APPSTORE_APP_ID =
+
+// Assets
+APP_ICON = AppIcon
+
+// Versions
+BUNDLE_SHORT_VERSION_STRING = 1.0.0
+BUNDLE_VERSION = 1
