@@ -31,6 +31,7 @@ targets:
             CFBundleIconName: $(APP_ICON)
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+        NSLocationWhenInUseUsageDescription: CurvyRide uses your location to center the map and set your route start point.
         UILaunchScreen: {}
     settings:
       base:

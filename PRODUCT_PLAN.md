@@ -21,7 +21,7 @@ CurvyRide is an iOS app for motorcyclists who want scenic asphalt rides with mor
 
 ### 2.1 MVP (v1.0) in scope
 - iOS 17+ app in SwiftUI.
-- Modular MVVM architecture (`View + Model + Repository`).
+- Modular MVVM architecture (`View + Model + Session/Repository`).
 - Apple MapKit visualization.
 - Route planner in BottomSheet over map.
 - Configurable route generation:
@@ -233,7 +233,7 @@ v1 implementations can be minimal and MapKit-centered, but interfaces must be fu
   - `selectedOptions`
 - `UserSettings`
   - planner defaults
-  - last start point mode
+  - last selected start point
 
 ## 8. Definition of Done (Global)
 
@@ -252,13 +252,13 @@ Backlog:
 - Create module structure and dependency graph.
 - Implement HomeMapScreen with MapKit baseline.
 - Implement PlannerBottomSheet with options/state.
-- Implement start point modes UI (current/manual placeholder wiring).
+- Implement start point selection shell (`My current location`, `Show on map`, search).
 - Add Planner persistence for planner defaults (duration=60).
 
 DoD:
 - App runs with map-first home + functional planner sheet.
 - Planner state persists locally between launches.
-- Start point mode selectable in UI.
+- Start point selectable in UI and reflected on map.
 - Unit tests for planner state reducer/view model.
 
 ## Sprint 2 - Routing Engine v1 and Alternatives
