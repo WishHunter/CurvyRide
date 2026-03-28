@@ -35,5 +35,7 @@
 	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>CurvyRide uses your location to center the map and set your route start point.</string>
 </dict>
 </plist>

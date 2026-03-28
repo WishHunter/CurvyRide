@@ -1,12 +1,12 @@
 # CurvyRide - Sprint 1 Execution Plan
 
 ## Goal
-Build a compilable project skeleton with modular boundaries, map-first home screen, planner bottom sheet shell, start point mode selection, and persisted planner defaults.
+Build a compilable project skeleton with modular boundaries, map-first home screen, planner bottom sheet shell, start point selection shell, and persisted planner defaults.
 
 ## Assumptions
 - Greenfield repository (currently no source files).
 - iOS target: 17+.
-- Architecture: modular MVVM (`View + Model + Repository`).
+- Architecture: modular MVVM (`View + Model + Session/Store`).
 - Sprint 1 ships scaffolding and basic flow, not full routing logic.
 
 ## 1. Module and Project Setup
@@ -55,20 +55,15 @@ CurvyRide/
     Maps/
       Maps+View.swift
       Maps+Model.swift
-      Maps+Repository.swift
       Views/
         HomeMapView.swift
         StartPointPickerView.swift
     Planner/
       Planner+View.swift
       Planner+Model.swift
-      Planner+Repository.swift
-      Views/
-        PlannerSheetView.swift
   Tests/
     PlannerTests/
       PlannerViewModelTests.swift
-      PlannerRepositoryTests.swift
     MapsTests/
       MapsModelTests.swift
 ```
@@ -76,7 +71,6 @@ CurvyRide/
 Naming convention for feature modules:
 - `Feature+View.swift`
 - `Feature+Model.swift`
-- `Feature+Repository.swift` (only if needed)
 - `Views/` for helper/supporting views
 
 ## 2. Sprint 1 Scope by Deliverable
@@ -104,7 +98,7 @@ Implement:
   - Planner open button (floating action).
   - Present planner bottom sheet using `Planner+View.swift`.
 - `Maps+Model.swift`:
-  - Selected start point summary placeholder.
+  - Observe `PlannerSession.settings` and expose map-facing summary state.
 
 Acceptance:
 - User sees map immediately.
@@ -119,30 +113,30 @@ Implement:
   - `isFastReturn: Bool`
   - `avoidHighways: Bool`
   - `avoidTolls: Bool`
-  - `isSurpriseMe: Bool`
-  - `startPointMode: StartPointMode`
-- `StartPointMode` enum (inside `Planner+Model.swift`):
-  - `.currentLocation`
-  - `.pickOnMap`
-  - `.searchPlace`
+  - `startPoint: PlannerStartPoint?`
+- `PlannerStartPoint` model:
+  - `latitude: Double`
+  - `longitude: Double`
+  - `displayName: String?`
 - `Planner+Model.swift`:
   - Mutations for all toggles/values.
-  - Load/save state via repository.
-- `Planner+View.swift` and `Views/PlannerSheetView.swift`:
+  - Validate/normalize incoming values.
+  - Write validated settings into `PlannerSession.settings`.
+- `Planner+View.swift`:
   - Controls for all v1 planner options (UI only).
-  - Start point mode segmented control or list.
+  - Start point controls: search field, `My current location`, `Show on map`.
+  - `Show on map` closes planner sheet, enters map selection mode, and returns back to planner after `Apply`.
 
 Acceptance:
 - Planner options can be changed.
-- Closing/reopening sheet keeps current state during app session.
+- Closing/reopening sheet keeps current state via `PlannerSession`.
 
 ### 2.4 Planner persistence
 Implement:
-- `Planner+Repository.swift` protocol:
-  - `loadPlannerState() async -> PlannerState`
-  - `savePlannerState(_ state: PlannerState) async`
 - `UserDefaultsStore.swift` abstraction wrapper.
-- `Data` implementation for repository encoding/decoding planner state.
+- `PlannerSession.swift` owns load/save of `PlannerSettings` via `UserDefaultsStore`.
+- `Planner+Model.swift` does not talk to storage directly; it only validates and updates session state.
+- Data encoding/decoding for planner settings with migration-safe default mapping.
 
 Acceptance:
 - Planner defaults persist between app launches.
@@ -150,85 +144,85 @@ Acceptance:
 
 ### 2.5 Start point selection shell
 Implement:
-- `Maps/Views/StartPointPickerView.swift` with mode selection UX.
-- For Sprint 1, allow selecting mode only; map tap/search can be placeholders with clear TODOs.
-- Expose selected mode in planner summary.
+- Planner start point UX:
+  - Search address/POI from planner sheet.
+  - Use current location from planner sheet.
+  - Pick by moving map under a fixed center pin and pressing `Apply`.
+- Expose selected start point in planner and map summary.
 
 Acceptance:
-- User can switch between `Use My Location`, `Pick on Map`, `Search Address/POI`.
-- Mode persists locally.
+- User can set start point via current location, map pick, or search.
+- Selected start point is reflected in planner and map summary during app session.
 
 ## 3. Implementation Order
 
 1. Create Xcode project and module targets.
 2. Add `FoundationKit` + `DesignSystem` primitives.
-3. Implement `Data` storage and `PlannerRepository`.
-3. Implement `Data` storage and `Planner+Repository`.
-4. Implement `Planner+Model` and planner state handling.
+3. Implement `Planner+Model` and planner settings handling.
+4. Implement `PlannerSession` as runtime source of truth for planner settings.
 5. Implement `Maps` home screen and `Planner` planner sheet presentation.
-6. Wire repository/session DI with `Factory` and keep model lifecycle in feature views.
-7. Add tests.
-8. Run build + tests + manual smoke check.
+6. Keep model lifecycle in feature views.
+7. Wire `MapsModel`/`PlannerModel` to shared `PlannerSession`.
+8. Add tests.
+9. Run build + tests + manual smoke check.
 
 ## 4. Concrete Task Checklist
 
 ### 4.1 Project bootstrap
-- [ ] Create app target and module targets.
-- [ ] Configure target dependencies and import visibility.
-- [ ] Set deployment target iOS 17+.
+- [x] Create app target and module targets.
+- [x] Configure target dependencies and import visibility.
+- [x] Set deployment target iOS 17+.
 
 ### 4.2 Domain/UI models
-- [ ] Add `Planner+Model` with `PlannerState`.
-- [ ] Add `StartPointMode` in feature model file.
+- [x] Add `Planner+Model` with `PlannerSettings`.
+- [x] Add `PlannerStartPoint` in session/model layer.
 - [ ] Add `LoadableState` helper (if needed for async loading).
 
 ### 4.3 Repository and storage
-- [ ] Add `Planner+Repository` protocol.
 - [ ] Add `UserDefaultsStore`.
-- [ ] Add `Data` implementation of planner repository.
-- [ ] Add serialization keys and migration-safe default mapping.
+- [ ] Add planner settings serialization keys and migration-safe default mapping.
+- [ ] Wire `PlannerSession` to load/save settings via store.
 
 ### 4.4 ViewModels
-- [ ] Add planner state holder in `Planner+Model` with `@Published state`.
-- [ ] Add `load()` and `save()` lifecycle methods.
-- [ ] Add map screen state holder in `Maps+Model`.
+- [x] Add planner state holder in `Planner+Model` with `@Published state`.
+- [x] Add validation/normalization logic in `Planner+Model` before writing into session.
+- [x] Add map screen state holder in `Maps+Model` derived from `PlannerSession`.
 
 ### 4.5 Views
-- [ ] Add `Maps+View` with full-screen map.
-- [ ] Add floating planner button.
-- [ ] Add `Planner+View`/`PlannerSheetView` controls.
-- [ ] Add start point mode picker component.
+- [x] Add `Maps+View` with full-screen map.
+- [x] Add floating planner button.
+- [x] Add `Planner+View` controls.
+- [x] Add start point selection flow (`My current location`, `Show on map`, search).
 
 ### 4.6 DI and composition
-- [ ] Register repositories/sessions with `Factory` in implementation files.
-- [ ] Keep `@StateObject` model creation in each `Feature+View.swift`.
-- [ ] Inject repository/session dependencies inside `Feature+Model.swift`.
-- [ ] Enforce no direct cross-feature dependencies (`Maps` must not depend on `Planner`).
+- [x] Keep `@StateObject` model creation in each `Feature+View.swift`.
+- [x] Register and inject shared `PlannerSession` via `Factory`.
+- [x] Enforce no direct cross-feature dependencies (`Maps` must not depend on `Planner`).
 
 ### 4.7 Testing
 - [ ] `PlannerModelTests`:
   - default state on first launch
-  - toggle mutations
-  - persistence roundtrip
-- [ ] `PlannerRepositoryTests`:
-  - decode fallback defaults when storage empty/corrupt
-  - save/load consistency
+  - toggle mutations with validation
+  - writes validated values into session
+- [ ] `PlannerSessionTests`:
+  - persistence roundtrip via store
+  - fallback defaults when storage is empty/corrupt
 - [ ] `MapsModelTests`:
-  - planner sheet open/close state behavior
+  - reacts to `PlannerSession.settings` updates
 
 ## 5. Test Matrix (Sprint 1)
 
 Unit tests:
-- `PlannerModel` initializes with defaults.
-- Changing `durationMinutes` updates state.
-- Changing `startPointMode` is persisted and restored.
+- `PlannerModel` validates and writes changes into session.
+- Changing `durationMinutes` updates `PlannerSession.settings`.
+- Changing start point updates `PlannerSession.settings.startPoint`.
 - `distanceLimitKm` handles `nil` correctly.
 
 Manual smoke:
 1. Launch app.
 2. Open planner.
 3. Set duration to non-default.
-4. Change start point mode.
+4. Set start point via search or `My current location` or `Show on map`.
 5. Close app and relaunch.
 6. Verify values restored.
 
@@ -237,8 +231,8 @@ Manual smoke:
 - Project compiles cleanly on iOS 17 simulator.
 - Home map screen and planner sheet are functional.
 - Planner state persists across relaunch.
-- Start point mode is selectable and persisted.
-- Unit tests for planner state/repository pass.
+- Start point is selectable and persisted.
+- Unit tests for planner model/session pass.
 - No P1 bugs in Sprint 1 scope.
 
 ## 7. Explicitly Deferred to Sprint 2+
