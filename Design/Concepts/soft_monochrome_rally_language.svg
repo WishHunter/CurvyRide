@@ -1,0 +1,205 @@
+<svg width="1840" height="1240" viewBox="0 0 1840 1240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="40" x2="1620" y2="1160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F1EC"/>
+      <stop offset="1" stop-color="#ECE6DE"/>
+    </linearGradient>
+    <pattern id="topo" width="260" height="260" patternUnits="userSpaceOnUse">
+      <path d="M10 52C58 16 136 12 232 44" stroke="#E3DDD5" stroke-width="3" stroke-linecap="round"/>
+      <path d="M18 118C72 80 148 76 240 112" stroke="#E8E2DB" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M-4 186C62 148 148 146 244 182" stroke="#E0D9D2" stroke-width="2.4" stroke-linecap="round"/>
+    </pattern>
+    <filter id="shadowCard" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#30271F" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="shellFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFEFC" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#F4EEE7" stop-opacity="0.76"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1840" height="1240" rx="36" fill="url(#bg)"/>
+  <rect width="1840" height="1240" fill="url(#topo)" opacity="0.55"/>
+
+  <text x="82" y="96" fill="#1F1B17" font-size="42" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">CurvyRide / Visual Language</text>
+  <text x="82" y="134" fill="#6D655D" font-size="22" font-family="Helvetica Neue, Arial, sans-serif">Color, tone, depth, components, and planner rules.</text>
+
+  <g transform="translate(74 188)">
+    <rect width="486" height="402" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="54" fill="#24201C" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">01 / Palette</text>
+    <text x="34" y="84" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Soft contrast. One copper accent.</text>
+
+    <rect x="34" y="118" width="120" height="108" rx="28" fill="#F3F1EE"/>
+    <text x="34" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Fog</text>
+    <text x="34" y="278" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#F3F1EE</text>
+    <text x="34" y="300" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Background</text>
+
+    <rect x="178" y="118" width="120" height="108" rx="28" fill="#FBFAF7" stroke="#EEE8E0"/>
+    <text x="178" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Porcelain</text>
+    <text x="178" y="278" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#FBFAF7</text>
+    <text x="178" y="300" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Card shell</text>
+
+    <rect x="322" y="118" width="120" height="108" rx="28" fill="#E9E2D9"/>
+    <text x="322" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Mist</text>
+    <text x="322" y="278" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#E9E2D9</text>
+    <text x="322" y="300" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Tracks</text>
+
+    <rect x="34" y="322" width="120" height="108" rx="28" fill="#1E1E1A"/>
+    <text x="34" y="456" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Graphite</text>
+    <text x="34" y="482" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#1E1E1A</text>
+    <text x="34" y="504" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Primary text</text>
+
+    <rect x="178" y="322" width="120" height="108" rx="28" fill="#6F6C66"/>
+    <text x="178" y="456" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Smoke</text>
+    <text x="178" y="482" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#6F6C66</text>
+    <text x="178" y="504" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Secondary</text>
+
+    <rect x="322" y="322" width="120" height="108" rx="28" fill="#C58A4A"/>
+    <text x="322" y="456" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Copper</text>
+    <text x="322" y="482" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">#C58A4A</text>
+    <text x="322" y="504" fill="#6E675F" font-size="14" font-family="Helvetica Neue, Arial, sans-serif">Accent only</text>
+  </g>
+
+  <g transform="translate(596 188)">
+    <rect width="544" height="402" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="54" fill="#24201C" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">02 / Tone</text>
+    <text x="34" y="84" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Quiet premium. Rider-first. Never “taxi app”.</text>
+
+    <text x="34" y="150" fill="#1E1E1A" font-size="38" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Evening Loop</text>
+    <text x="34" y="180" fill="#6F6C66" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Hero title / route title</text>
+
+    <text x="34" y="248" fill="#1E1E1A" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Plan this ride</text>
+    <text x="34" y="274" fill="#6F6C66" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Section heading</text>
+
+    <text x="34" y="334" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">START POINT</text>
+    <text x="34" y="360" fill="#1E1E1A" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Belgrade Waterfront</text>
+    <text x="34" y="384" fill="#6F6C66" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Control label + value</text>
+
+    <rect x="322" y="118" width="176" height="54" rx="20" fill="#F4EFE8"/>
+    <text x="352" y="152" fill="#1E1E1A" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Quiet Premium</text>
+    <rect x="322" y="190" width="176" height="54" rx="20" fill="#F4EFE8"/>
+    <text x="360" y="224" fill="#1E1E1A" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Rider-first</text>
+    <rect x="322" y="262" width="176" height="54" rx="20" fill="#F4EFE8"/>
+    <text x="360" y="296" fill="#1E1E1A" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Not Taxi UI</text>
+    <rect x="322" y="334" width="176" height="54" rx="20" fill="#F4EFE8"/>
+    <text x="354" y="368" fill="#1E1E1A" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Not Neo-glass</text>
+  </g>
+
+  <g transform="translate(1176 188)">
+    <rect width="590" height="402" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="54" fill="#24201C" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">03 / Surfaces</text>
+    <text x="34" y="84" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Broad radii. Soft shadows. Minimal borders.</text>
+
+    <rect x="34" y="118" width="160" height="108" rx="30" fill="#F3F1EE"/>
+    <text x="34" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Base canvas</text>
+    <text x="34" y="276" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Map fog / page base</text>
+
+    <rect x="216" y="118" width="160" height="108" rx="30" fill="#FBFAF7" filter="url(#shadowCard)"/>
+    <text x="216" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Component card</text>
+    <text x="216" y="276" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Short lift</text>
+
+    <rect x="398" y="118" width="160" height="108" rx="34" fill="url(#shellFill)" filter="url(#shadowCard)"/>
+    <text x="398" y="252" fill="#24201C" font-size="18" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Planner shell</text>
+    <text x="398" y="276" fill="#6E675F" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Detached layer</text>
+
+    <path d="M34 320H556" stroke="#E7E0D8"/>
+    <text x="34" y="356" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">1. Outer shell radius is larger than inner cards.</text>
+    <text x="34" y="386" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">2. Shadow is wide and soft, never harsh.</text>
+    <text x="34" y="416" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">3. One blur layer is enough.</text>
+  </g>
+
+  <g transform="translate(74 626)">
+    <rect width="808" height="538" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="54" fill="#24201C" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">04 / Core Components</text>
+    <text x="34" y="84" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">A small family of floating shapes.</text>
+
+    <g transform="translate(34 128)">
+      <rect width="286" height="62" rx="24" fill="#FBFAF7" filter="url(#shadowCard)"/>
+      <circle cx="28" cy="31" r="8" stroke="#6F6C66" stroke-width="2"/>
+      <path d="M33 36L39 42" stroke="#6F6C66" stroke-width="2" stroke-linecap="round"/>
+      <text x="52" y="38" fill="#7B746B" font-size="17" font-family="Helvetica Neue, Arial, sans-serif">Search start point</text>
+    </g>
+
+    <g transform="translate(346 128)">
+      <rect width="80" height="62" rx="24" fill="#FBFAF7" filter="url(#shadowCard)"/>
+      <path d="M28 26H52" stroke="#1E1E1A" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M28 33H46" stroke="#1E1E1A" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M28 40H40" stroke="#1E1E1A" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(450 128)">
+      <circle cx="31" cy="31" r="31" fill="#2A241E" filter="url(#shadowCard)"/>
+      <path d="M23 31L29 37L41 25" stroke="#FBFAF7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <g transform="translate(34 224)">
+      <rect width="70" height="24" rx="12" fill="#EFE6DA"/>
+      <rect x="82" width="60" height="24" rx="12" fill="#F4EFE8"/>
+      <rect x="150" width="76" height="24" rx="12" fill="#F4EFE8"/>
+      <text x="18" y="16" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">90 min</text>
+      <text x="101" y="16" fill="#5E5852" font-size="12" font-weight="600" font-family="Helvetica Neue, Arial, sans-serif">Loop</text>
+      <text x="169" y="16" fill="#5E5852" font-size="12" font-weight="600" font-family="Helvetica Neue, Arial, sans-serif">No tolls</text>
+    </g>
+
+    <g transform="translate(34 286)">
+      <rect width="320" height="184" rx="30" fill="#FBFAF7" filter="url(#shadowCard)"/>
+      <text x="24" y="40" fill="#25211C" font-size="22" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Evening Loop</text>
+      <text x="24" y="66" fill="#6F6C66" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Scenic backroads, low traffic bias.</text>
+      <rect x="24" y="86" width="72" height="24" rx="12" fill="#EFE6DA"/>
+      <rect x="104" y="86" width="58" height="24" rx="12" fill="#F4EFE8"/>
+      <rect x="170" y="86" width="62" height="24" rx="12" fill="#F4EFE8"/>
+      <text x="42" y="102" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">90 min</text>
+      <text x="121" y="102" fill="#5E5852" font-size="12" font-weight="600" font-family="Helvetica Neue, Arial, sans-serif">Loop</text>
+      <text x="188" y="102" fill="#5E5852" font-size="12" font-weight="600" font-family="Helvetica Neue, Arial, sans-serif">Scenic</text>
+      <rect x="24" y="136" width="94" height="18" rx="9" fill="#E9E2D9"/>
+      <rect x="134" y="128" width="128" height="34" rx="17" fill="#2A241E"/>
+      <text x="172" y="150" fill="#FBFAF7" font-size="14" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Start ride</text>
+    </g>
+
+    <g transform="translate(390 286)">
+      <rect width="380" height="184" rx="30" fill="#FBFAF7" filter="url(#shadowCard)"/>
+      <text x="24" y="36" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">RIDE SHAPE</text>
+      <path d="M28 96C54 70 82 70 110 98C138 126 176 132 228 108" stroke="#2A241E" stroke-width="4" stroke-linecap="round"/>
+      <path d="M28 96C54 70 82 70 110 98C138 126 176 132 228 108" stroke="#C58A4A" stroke-width="10" stroke-opacity="0.25" stroke-linecap="round"/>
+      <text x="24" y="146" fill="#25211C" font-size="22" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Apex-like geometry</text>
+      <text x="24" y="172" fill="#6F6C66" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Motorcycle cue without literal bike art.</text>
+    </g>
+  </g>
+
+  <g transform="translate(918 626)">
+    <rect width="848" height="538" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="54" fill="#24201C" font-size="28" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">05 / Planner Rules</text>
+    <text x="34" y="84" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">This is where the style usually breaks.</text>
+
+    <g transform="translate(34 132)">
+      <rect width="364" height="318" rx="34" fill="url(#shellFill)" filter="url(#shadowCard)"/>
+      <text x="26" y="48" fill="#25211C" font-size="24" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Do</text>
+      <text x="26" y="92" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Detached shell</text>
+      <text x="26" y="122" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Visible map crown</text>
+      <text x="26" y="152" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Small internal cards</text>
+      <text x="26" y="182" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Separate CTA dock</text>
+      <text x="26" y="212" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Copper only for emphasis</text>
+      <text x="26" y="262" fill="#25211C" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Result</text>
+      <text x="26" y="294" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Light planner.</text>
+      <text x="26" y="320" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Map-first feeling stays intact.</text>
+    </g>
+
+    <g transform="translate(432 132)">
+      <rect width="382" height="318" rx="34" fill="#F7F2EC" filter="url(#shadowCard)"/>
+      <text x="26" y="48" fill="#25211C" font-size="24" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Avoid</text>
+      <text x="26" y="92" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Edge-to-edge slab</text>
+      <text x="26" y="122" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Too many equal rows</text>
+      <text x="26" y="152" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Heavy black footer</text>
+      <text x="26" y="182" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Mixed accent colors</text>
+      <text x="26" y="212" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Literal bike graphics</text>
+      <text x="26" y="262" fill="#25211C" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Result</text>
+      <text x="26" y="294" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Dense panel.</text>
+      <text x="26" y="320" fill="#6E675F" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Generic and visually heavy.</text>
+    </g>
+
+    <g transform="translate(34 472)">
+      <rect width="780" height="42" rx="20" fill="#FBFAF7"/>
+      <text x="22" y="28" fill="#A56E36" font-size="16" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Motion: spring lift for the sheet, fast chip fades, subtle route draw. No decorative loops.</text>
+    </g>
+  </g>
+</svg>

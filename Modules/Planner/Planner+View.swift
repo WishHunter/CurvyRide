@@ -1,195 +1,345 @@
 import SwiftUI
 
 struct PlannerView: View {
+  @Environment(\.dismiss) private var dismiss
+  @State private var selectedTab: PlannerTab = .core
+  @State private var durationInput = ""
+  @State private var distanceLimitInput = ""
+  @FocusState private var focusedField: PlannerMetricFocusField?
   @StateObject private var model = PlannerModel()
   @StateObject private var searchService = StartPointSearchService()
 
-  let onShowOnMap: () -> Void
+  let onPickStartPointOnMap: () -> Void
 
   private let durationRange: ClosedRange<Int> = 10...240
   private let distanceRange: ClosedRange<Int> = 1...300
 
   var body: some View {
-    NavigationStack {
-      Form {
-        Section("Route") {
-          VStack(alignment: .leading, spacing: 8) {
-            HStack {
-              Text("Duration")
-              Spacer()
-              Text("\(model.settings.durationMinutes) min")
-                .foregroundColor(\.content.secondary)
-            }
+    VStack(spacing: 12) {
+      PlannerSheetHandleView()
+        .padding(.top, 8)
 
-            Slider(
-              value: durationSliderBinding,
-              in: Double(durationRange.lowerBound)...Double(durationRange.upperBound),
-              step: 5
-            )
-          }
+      PlannerSheetHeaderView(
+        title: "Plan Ride",
+        selectedTab: $selectedTab
+      )
 
-          Toggle(
-            "Loop route",
-            isOn: boolBinding(for: \.isLoopRoute)
-          )
-
-          if model.settings.isLoopRoute {
-            Toggle(
-              "Fast return",
-              isOn: boolBinding(for: \.isFastReturn)
-            )
-          }
-
-          Button("Surprise me") {
-            model.applyRandomSettings()
-          }
-        }
-
-        Section("Distance limit") {
-          Toggle(
-            "Enable distance limit",
-            isOn: distanceLimitEnabledBinding
-          )
-
-          if model.settings.distanceLimitKm != nil {
-            Stepper(
-              value: distanceLimitBinding,
-              in: distanceRange,
-              step: 1
-            ) {
-              HStack {
-                Text("Max distance")
-                Spacer()
-                Text("\(model.settings.distanceLimitKm ?? 0) km")
-                  .foregroundColor(\.content.secondary)
-              }
-            }
-          }
-        }
-
-        Section("Road preferences") {
-          Toggle(
-            "Avoid highways",
-            isOn: boolBinding(for: \.avoidHighways)
-          )
-
-          Toggle(
-            "Avoid tolls",
-            isOn: boolBinding(for: \.avoidTolls)
-          )
-        }
-
-        Section("Start point") {
-          TextField("Search place", text: $searchService.query)
-            .onChange(of: searchService.query) { _, newValue in
-              searchService.updateQuery(newValue)
-            }
-            .onSubmit {
-              Task {
-                if let completion = searchService.completions.first,
-                   let startPoint = await model.searchStartPoint(completion: completion) {
-                  model.setStartPoint(startPoint)
-                  searchService.clear()
-                } else if let startPoint = await model.searchStartPoint(query: searchService.query) {
-                  model.setStartPoint(startPoint)
-                  searchService.clear()
-                }
-              }
-            }
-
-          if searchService.completions.isEmpty == false {
-            ForEach(searchService.completions.prefix(5)) { completion in
-              Button {
-                Task {
-                  if let startPoint = await model.searchStartPoint(completion: completion) {
-                    model.setStartPoint(startPoint)
-                    searchService.clear()
-                  }
-                }
-              } label: {
-                VStack(alignment: .leading, spacing: 2) {
-                  Text(completion.title)
-                    .foregroundColor(\.content.primary)
-                  if completion.subtitle.isEmpty == false {
-                    Text(completion.subtitle)
-                      .font(\.body.small12)
-                      .foregroundColor(\.content.secondary)
-                  }
-                }
-              }
-            }
-          }
-
-          HStack {
-            Button("My current location") {
-              Task {
-                await model.useCurrentLocation()
-              }
-            }
-            .buttonStyle(.borderless)
-
-            Spacer(minLength: 12)
-
-            Button("Show on map") {
-              onShowOnMap()
-            }
-            .buttonStyle(.borderless)
-          }
-
-          if let startPoint = model.settings.startPoint {
-            VStack(alignment: .leading, spacing: 6) {
-              if let displayName = startPoint.displayName, displayName.isEmpty == false {
-                Text(displayName)
-              }
-              Text("\(startPoint.latitude), \(startPoint.longitude)")
-                .font(\.body.small12)
-                .foregroundColor(\.content.secondary)
-            }
-
-            Button("Clear start point") {
-              model.setStartPoint(nil)
-            }
-          } else {
-            Text("Not selected")
-              .foregroundColor(\.content.secondary)
-          }
-        }
+      if let feedbackState {
+        DSStateCard(
+          title: feedbackState.title,
+          message: feedbackState.message,
+          tone: feedbackState.tone,
+          actionTitle: feedbackState.actionTitle,
+          action: feedbackState.action
+        )
+        .padding(.horizontal, 16)
       }
-      .navigationTitle("Planner")
-      .presentationDetents([.medium, .large])
-      .tint(\.accent.primary)
+
+      ScrollView(showsIndicators: false) {
+        VStack(alignment: .leading, spacing: 18) {
+          currentTabContent
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 6)
+        .padding(.bottom, 128)
+      }
+      .scrollDismissesKeyboard(.interactively)
+    }
+    .padding(.horizontal, 12)
+    .background(Color.clear)
+    .safeAreaInset(edge: .bottom) {
+      PlannerActionBarView(
+        isClearDisabled: model.settings.startPoint == nil,
+        onClear: { model.setStartPoint(nil) },
+        onSurprise: model.applyRandomSettings,
+        onApply: dismiss.callAsFunction
+      )
+      .padding(.horizontal, 12)
+      .padding(.top, 8)
+      .background(Color.clear)
+    }
+    .presentationDetents([.medium, .large])
+    .presentationCornerRadius(Radii.current.xLarge + 4)
+    .presentationBackground(.clear)
+    .presentationDragIndicator(.hidden)
+    .tint(\.accent.primary)
+    .onAppear(perform: syncMetricInputs)
+    .onChange(of: model.settings.durationMinutes) { _, _ in
+      guard focusedField != .duration else { return }
+      durationInput = String(model.settings.durationMinutes)
+    }
+    .onChange(of: model.settings.distanceLimitKm) { _, _ in
+      guard focusedField != .distanceLimit else { return }
+      distanceLimitInput = model.settings.distanceLimitKm.map(String.init) ?? ""
+    }
+    .onChange(of: focusedField) { _, newField in
+      if newField != .duration {
+        durationInput = String(model.settings.durationMinutes)
+      }
+
+      if newField != .distanceLimit {
+        distanceLimitInput = model.settings.distanceLimitKm.map(String.init) ?? ""
+      }
     }
   }
 
-  private var durationSliderBinding: Binding<Double> {
-    Binding(
-      get: { Double(model.settings.durationMinutes) },
-      set: { model.setDuration(Int($0.rounded())) }
+  private var currentTabContent: some View {
+    VStack(spacing: 14) {
+      if selectedTab == .core {
+        coreTab
+      } else {
+        advancedTab
+      }
+    }
+  }
+
+  private var coreTab: some View {
+    VStack(spacing: 14) {
+      PlannerStartPointCardView(
+        startPoint: model.settings.startPoint,
+        isBusy: model.startPointFlowState.isBusy,
+        query: $searchService.query,
+        completions: Array(searchService.completions.prefix(3)),
+        onQueryChange: handleSearchQueryChange,
+        onSubmit: handleSearchSubmit,
+        onSelectCompletion: { completion in
+          Task { await selectCompletion(completion) }
+        },
+        onChooseOnMap: handleChooseOnMap,
+        onUseCurrentLocation: {
+          Task { await model.useCurrentLocation() }
+        }
+      )
+      
+      PlannerMetricCardView(
+        title: "Duration",
+        caption: "min",
+        visualStyle: .speedometer(
+          progress: durationProgress,
+          minLabel: "\(durationRange.lowerBound)",
+          maxLabel: "\(durationRange.upperBound)"
+        )
+      ) {
+        PlannerMetricInputView(
+          text: durationInputBinding,
+          field: .duration,
+          focusedField: $focusedField
+        )
+      } controls: {
+        Slider(
+          value: Binding(
+            get: { Double(model.settings.durationMinutes) },
+            set: { model.setDuration(Int($0.rounded())) }
+          ),
+          in: Double(durationRange.lowerBound)...Double(durationRange.upperBound),
+          step: 5
+        )
+      }
+
+      PlannerRouteTypeCardView(
+        routeTypeSummary: model.settings.isLoopRoute ? "Loop" : "Point-to-Point",
+        isLoopRoute: Binding(
+          get: { model.settings.isLoopRoute },
+          set: { model.set($0, for: \.isLoopRoute) }
+        )
+      )
+    }
+  }
+
+  private var advancedTab: some View {
+    VStack(spacing: 14) {
+      PlannerMetricCardView(
+        title: "Distance",
+        caption: model.settings.distanceLimitKm == nil ? "no cap" : "km cap",
+        visualStyle: .speedometer(
+          progress: distanceLimitProgress,
+          minLabel: "\(distanceRange.lowerBound)",
+          maxLabel: "\(distanceRange.upperBound)"
+        )
+      ) {
+        if model.settings.distanceLimitKm == nil {
+          PlannerMetricSymbolView(symbol: "∞")
+        } else {
+          PlannerMetricInputView(
+            text: distanceLimitInputBinding,
+            field: .distanceLimit,
+            focusedField: $focusedField
+          )
+        }
+      } controls: {
+        PlannerToggleRowView(
+          title: "Distance Cap",
+          subtitle: model.settings.distanceLimitKm.map { "\($0) km" } ?? "Off",
+          isOn: Binding(
+            get: { model.settings.distanceLimitKm != nil },
+            set: { model.setDistanceLimitEnabled($0) }
+          )
+        )
+
+        if model.settings.distanceLimitKm != nil {
+          Slider(
+            value: Binding(
+              get: { Double(model.settings.distanceLimitKm ?? 25) },
+              set: { model.setDistanceLimit(Int($0.rounded())) }
+            ),
+            in: Double(distanceRange.lowerBound)...Double(distanceRange.upperBound),
+            step: 1
+          )
+
+          PlannerMetricFooterView(
+            leading: "Cap",
+            trailing: "\(model.settings.distanceLimitKm ?? 0) km"
+          )
+        }
+
+        PlannerToggleRowView(
+          title: "Fast Return",
+          subtitle: model.settings.isLoopRoute ? nil : "Loop only",
+          isOn: Binding(
+            get: { model.settings.isFastReturn },
+            set: { model.set($0, for: \.isFastReturn) }
+          ),
+          isDisabled: model.settings.isLoopRoute == false
+        )
+      }
+
+      PlannerRoadPreferencesCardView(
+        avoidHighways: Binding(
+          get: { model.settings.avoidHighways },
+          set: { model.set($0, for: \.avoidHighways) }
+        ),
+        avoidTolls: Binding(
+          get: { model.settings.avoidTolls },
+          set: { model.set($0, for: \.avoidTolls) }
+        )
+      )
+    }
+  }
+
+  private var durationProgress: Double {
+    normalizedProgress(
+      value: Double(model.settings.durationMinutes),
+      range: Double(durationRange.lowerBound)...Double(durationRange.upperBound)
     )
   }
 
-  private var distanceLimitEnabledBinding: Binding<Bool> {
-    Binding(
-      get: { model.settings.distanceLimitKm != nil },
-      set: { model.setDistanceLimitEnabled($0) }
+  private var distanceLimitProgress: Double {
+    normalizedProgress(
+      value: Double(model.settings.distanceLimitKm ?? distanceRange.lowerBound),
+      range: Double(distanceRange.lowerBound)...Double(distanceRange.upperBound)
     )
   }
 
-  private var distanceLimitBinding: Binding<Int> {
+  private var durationInputBinding: Binding<String> {
     Binding(
-      get: { model.settings.distanceLimitKm ?? 25 },
-      set: { model.setDistanceLimit($0) }
+      get: { durationInput },
+      set: { newValue in
+        let filtered = filteredNumericText(newValue, maximumLength: 3)
+        durationInput = filtered
+
+        guard let value = Int(filtered) else { return }
+        model.setDuration(value)
+      }
     )
   }
 
-  private func boolBinding(for keyPath: WritableKeyPath<PlannerSettings, Bool>) -> Binding<Bool> {
+  private var distanceLimitInputBinding: Binding<String> {
     Binding(
-      get: { model.settings[keyPath: keyPath] },
-      set: { model.set($0, for: keyPath) }
+      get: { distanceLimitInput },
+      set: { newValue in
+        let filtered = filteredNumericText(newValue, maximumLength: 3)
+        distanceLimitInput = filtered
+
+        guard let value = Int(filtered) else { return }
+        model.setDistanceLimit(value)
+      }
     )
+  }
+
+  private var feedbackState: PlannerFeedbackState? {
+    switch model.startPointFlowState {
+    case .idle:
+      guard model.settings.startPoint == nil else { return nil }
+      let trimmedQuery = searchService.query.trimmingCharacters(in: .whitespacesAndNewlines)
+      guard trimmedQuery.isEmpty, searchService.completions.isEmpty else { return nil }
+      return PlannerFeedbackState(
+        title: "No Start Yet",
+        message: "Search, use current location, or pin on map.",
+        tone: .empty
+      )
+    case .locatingCurrentLocation:
+      return PlannerFeedbackState(
+        title: "Finding Location",
+        message: "Setting a start from your current location.",
+        tone: .loading
+      )
+    case .searching(let query):
+      return PlannerFeedbackState(
+        title: "Searching",
+        message: "Looking for '\(query)'.",
+        tone: .loading
+      )
+    case .error(let message):
+      return PlannerFeedbackState(
+        title: "Start Unavailable",
+        message: message,
+        tone: .error,
+        actionTitle: "OK",
+        action: model.clearStartPointFeedback
+      )
+    }
+  }
+
+  private func handleSearchSubmit() {
+    Task {
+      if let completion = searchService.completions.first {
+        await selectCompletion(completion)
+      } else if await model.selectStartPoint(query: searchService.query) {
+        searchService.clear()
+      }
+    }
+  }
+
+  private func handleSearchQueryChange(_ value: String) {
+    model.clearStartPointFeedback()
+    searchService.updateQuery(value)
+  }
+
+  private func handleChooseOnMap() {
+    model.clearStartPointFeedback()
+    onPickStartPointOnMap()
+  }
+
+  private func selectCompletion(_ completion: StartPointSearchCompletion) async {
+    if await model.selectStartPoint(completion: completion) {
+      searchService.clear()
+    }
+  }
+
+  private func normalizedProgress(value: Double, range: ClosedRange<Double>) -> Double {
+    guard range.upperBound > range.lowerBound else { return 0 }
+    let normalized = (value - range.lowerBound) / (range.upperBound - range.lowerBound)
+    return min(max(normalized, 0), 1)
+  }
+
+  private func syncMetricInputs() {
+    durationInput = String(model.settings.durationMinutes)
+    distanceLimitInput = model.settings.distanceLimitKm.map(String.init) ?? ""
+  }
+
+  private func filteredNumericText(_ text: String, maximumLength: Int) -> String {
+    String(text.filter(\.isNumber).prefix(maximumLength))
   }
 }
 
+private struct PlannerFeedbackState {
+  let title: String
+  let message: String
+  let tone: DSStateCard.Tone
+  var actionTitle: String? = nil
+  var action: (() -> Void)? = nil
+}
+
 #Preview {
-  PlannerView(onShowOnMap: {})
+  PlannerView(onPickStartPointOnMap: {})
 }

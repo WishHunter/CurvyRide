@@ -8,11 +8,18 @@ extension Container {
   }
 }
 
+enum StartPointBootstrapState: Equatable {
+  case resolving
+  case ready
+  case unavailable
+}
+
 final class PlannerSession: ObservableObject {
   private let locationService = CurrentLocationService()
 
   @Published var settings: PlannerSettings = .init()
   @Published private(set) var recenterRequest: PlannerRecenterRequest?
+  @Published private(set) var startPointBootstrapState: StartPointBootstrapState = .resolving
 
   init() {
     bootstrapInitialStartPoint()
@@ -20,6 +27,10 @@ final class PlannerSession: ObservableObject {
 
   func applySettings(_ newSettings: PlannerSettings, recenterOnStartPoint: Bool = false) {
     settings = newSettings
+
+    if newSettings.startPoint != nil {
+      startPointBootstrapState = .ready
+    }
 
     guard recenterOnStartPoint, let startPoint = newSettings.startPoint else { return }
     recenterRequest = PlannerRecenterRequest(startPoint: startPoint)
@@ -32,20 +43,37 @@ final class PlannerSession: ObservableObject {
   }
 
   private func bootstrapInitialStartPoint() {
+    guard settings.startPoint == nil else {
+      startPointBootstrapState = .ready
+      return
+    }
+
+    startPointBootstrapState = .resolving
+
     Task { [weak self] in
       guard let self else { return }
-      guard let coordinate = await locationService.requestCurrentLocation() else { return }
+      guard let coordinate = await locationService.requestCurrentLocation() else {
+        await MainActor.run {
+          self.startPointBootstrapState = self.settings.startPoint == nil ? .unavailable : .ready
+        }
+        return
+      }
 
       await MainActor.run {
-        guard self.settings.startPoint == nil else { return }
+        guard self.settings.startPoint == nil else {
+          self.startPointBootstrapState = .ready
+          return
+        }
+
         self.setStartPoint(
           PlannerStartPoint(
             latitude: coordinate.latitude,
             longitude: coordinate.longitude,
-            displayName: "My current location"
+            displayName: "Current location"
           ),
           shouldRecenter: true
         )
+        self.startPointBootstrapState = .ready
       }
     }
   }
@@ -54,7 +82,7 @@ final class PlannerSession: ObservableObject {
 struct PlannerSettings: Equatable {
   var durationMinutes: Int = 60
   var distanceLimitKm: Int? = nil
-  var isLoopRoute: Bool = false
+  var isLoopRoute: Bool = true
   var isFastReturn: Bool = false
   var avoidHighways: Bool = false
   var avoidTolls: Bool = false

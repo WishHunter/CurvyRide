@@ -131,7 +131,25 @@ Acceptance:
 - Planner options can be changed.
 - Closing/reopening sheet keeps current state via `PlannerSession`.
 
-### 2.4 Planner persistence
+### 2.4 UX/UI baseline and interaction states
+Implement:
+- UX/UI baseline artifacts for implemented Sprint 1 screens (`HomeMapScreen`, `PlannerBottomSheet`):
+  - Screen state definitions for `loading`, `empty`, `error`, and normal/interactive state.
+  - Interaction behavior spec for planner open/close, start point picker transitions, and `Show on map -> Apply -> return`.
+  - Copy and labels alignment for planner controls (`Start From`, duration, toggles).
+- `DesignSystem` baseline additions:
+  - Minimal color/spacing/typography tokens used by `Maps` and `Planner`.
+  - Shared UI primitives for primary button and bottom sheet action rows.
+- UX smoke checklist for implemented flow:
+  - First-launch clarity.
+  - State continuity when reopening planner.
+  - Predictable transitions between map and planner.
+
+Acceptance:
+- Implemented Sprint 1 screens use a consistent baseline (tokens, labels, and interaction states).
+- Required `loading/empty/error` states are explicitly defined for current screens, even if some are placeholder in Sprint 1.
+
+### 2.5 Planner persistence
 Implement:
 - `UserDefaultsStore.swift` abstraction wrapper.
 - `PlannerSession.swift` owns load/save of `PlannerSettings` via `UserDefaultsStore`.
@@ -142,7 +160,7 @@ Acceptance:
 - Planner defaults persist between app launches.
 - Default for first launch is `durationMinutes = 60`, `distanceLimitKm = nil`.
 
-### 2.5 Start point selection shell
+### 2.6 Start point selection shell
 Implement:
 - Planner start point UX:
   - Search address/POI from planner sheet.
@@ -159,12 +177,13 @@ Acceptance:
 1. Create Xcode project and module targets.
 2. Add `FoundationKit` + `DesignSystem` primitives.
 3. Implement `Planner+Model` and planner settings handling.
-4. Implement `PlannerSession` as runtime source of truth for planner settings.
-5. Implement `Maps` home screen and `Planner` planner sheet presentation.
-6. Keep model lifecycle in feature views.
-7. Wire `MapsModel`/`PlannerModel` to shared `PlannerSession`.
-8. Add tests.
-9. Run build + tests + manual smoke check.
+4. Define and align UX/UI baseline for implemented Sprint 1 flows (`HomeMapScreen` + `PlannerBottomSheet`).
+5. Implement `PlannerSession` as runtime source of truth for planner settings.
+6. Implement `Maps` home screen and `Planner` planner sheet presentation.
+7. Keep model lifecycle in feature views.
+8. Wire `MapsModel`/`PlannerModel` to shared `PlannerSession`.
+9. Add tests.
+10. Run build + tests + manual smoke check.
 
 ## 4. Concrete Task Checklist
 
@@ -210,6 +229,12 @@ Acceptance:
 - [ ] `MapsModelTests`:
   - reacts to `PlannerSession.settings` updates
 
+### 4.8 UX/UI
+- [x] Define `loading/empty/error` states for `HomeMapScreen` and `PlannerBottomSheet`.
+- [x] Align planner labels and control copy (`Start From`, duration/toggles naming).
+- [x] Add minimal shared tokens/components in `DesignSystem` used by implemented screens.
+- [x] Add UX smoke checklist for planner open/close and map-selection return flow.
+
 ## 5. Test Matrix (Sprint 1)
 
 Unit tests:
@@ -230,6 +255,7 @@ Manual smoke:
 
 - Project compiles cleanly on iOS 17 simulator.
 - Home map screen and planner sheet are functional.
+- UX/UI baseline for implemented Sprint 1 screens is defined and applied (tokens, labels, interaction states).
 - Planner state persists across relaunch.
 - Start point is selectable and persisted.
 - Unit tests for planner model/session pass.

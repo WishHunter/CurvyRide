@@ -1,0 +1,123 @@
+<svg width="1840" height="1240" viewBox="0 0 1840 1240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="40" x2="1660" y2="1180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F1EC"/>
+      <stop offset="1" stop-color="#ECE6DE"/>
+    </linearGradient>
+    <pattern id="topo" width="260" height="260" patternUnits="userSpaceOnUse">
+      <path d="M10 52C58 16 136 12 232 44" stroke="#E3DDD5" stroke-width="3" stroke-linecap="round"/>
+      <path d="M18 118C72 80 148 76 240 112" stroke="#E8E2DB" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M-4 186C62 148 148 146 244 182" stroke="#E0D9D2" stroke-width="2.4" stroke-linecap="round"/>
+    </pattern>
+    <filter id="shadowCard" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#30271F" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1840" height="1240" rx="36" fill="url(#bg)"/>
+  <rect width="1840" height="1240" fill="url(#topo)" opacity="0.55"/>
+
+  <text x="82" y="96" fill="#1F1B17" font-size="42" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">CurvyRide / Typography Directions</text>
+  <text x="82" y="134" fill="#6D655D" font-size="22" font-family="Helvetica Neue, Arial, sans-serif">Three directions. One recommendation.</text>
+
+  <g transform="translate(82 180)">
+    <rect width="320" height="56" rx="22" fill="#FBFAF7" filter="url(#shadowCard)"/>
+    <circle cx="28" cy="28" r="10" fill="#C58A4A"/>
+    <text x="52" y="36" fill="#1F1B17" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Recommended: Direction A</text>
+  </g>
+
+  <g transform="translate(74 272)">
+    <rect width="542" height="724" rx="36" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <rect x="34" y="28" width="132" height="38" rx="19" fill="#EFE6DA"/>
+    <text x="56" y="52" fill="#A56E36" font-size="14" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">RECOMMENDED</text>
+    <text x="34" y="110" fill="#1F1B17" font-size="34" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">A / Native Precision</text>
+    <text x="34" y="142" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Helvetica Neue as stand-in for SF.</text>
+    <text x="34" y="166" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Metrics use Menlo / mono digits.</text>
+
+    <rect x="34" y="198" width="474" height="178" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="238" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">ROUTE TITLE</text>
+    <text x="58" y="286" fill="#1E1E1A" font-size="40" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Copper Apex Loop</text>
+    <text x="58" y="318" fill="#6F6C66" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Clean. Native. Premium.</text>
+
+    <rect x="34" y="396" width="474" height="136" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="434" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">RIDE METRICS</text>
+    <text x="58" y="484" fill="#1E1E1A" font-size="36" font-weight="700" font-family="Menlo, Monaco, monospace">92 min / 128 km / 78%</text>
+    <text x="58" y="512" fill="#6F6C66" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Subtle dashboard feel.</text>
+
+    <rect x="34" y="552" width="474" height="102" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="590" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">CONTROL LABELS</text>
+    <text x="58" y="626" fill="#1E1E1A" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Belgrade Waterfront</text>
+
+    <text x="34" y="694" fill="#1F1B17" font-size="22" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Why it fits</text>
+    <text x="34" y="728" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">1. Feels native to map tooling.</text>
+    <text x="34" y="756" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">2. Brand comes from layout, not loud fonts.</text>
+    <text x="34" y="784" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">3. Mono metrics add subtle instrument energy.</text>
+
+    <text x="34" y="836" fill="#1F1B17" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">SwiftUI note</text>
+    <text x="34" y="866" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Use `monospacedDigit()` first.</text>
+    <text x="34" y="892" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Use full mono only for key ride data.</text>
+  </g>
+
+  <g transform="translate(650 272)">
+    <rect width="542" height="724" rx="36" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="102" fill="#1F1B17" font-size="34" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">B / Road Journal</text>
+    <text x="34" y="134" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Georgia for large titles.</text>
+    <text x="34" y="158" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">System sans for UI. Mono for metrics.</text>
+
+    <rect x="34" y="198" width="474" height="178" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="238" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">ROUTE TITLE</text>
+    <text x="58" y="286" fill="#1E1E1A" font-size="42" font-weight="700" font-family="Georgia, serif">Copper Apex Loop</text>
+    <text x="58" y="318" fill="#6F6C66" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Warmer. More editorial.</text>
+
+    <rect x="34" y="396" width="474" height="136" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="434" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">RIDE METRICS</text>
+    <text x="58" y="484" fill="#1E1E1A" font-size="36" font-weight="700" font-family="Menlo, Monaco, monospace">92 min / 128 km / 78%</text>
+    <text x="58" y="512" fill="#6F6C66" font-size="15" font-family="Helvetica Neue, Arial, sans-serif">Metrics still stay sharp.</text>
+
+    <rect x="34" y="552" width="474" height="102" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="590" fill="#A56E36" font-size="12" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">CONTROL LABELS</text>
+    <text x="58" y="626" fill="#1E1E1A" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Belgrade Waterfront</text>
+
+    <text x="34" y="694" fill="#1F1B17" font-size="22" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Why it is interesting</text>
+    <text x="34" y="728" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">1. Adds romance and route-story feel.</text>
+    <text x="34" y="756" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">2. Good for onboarding or saved rides.</text>
+
+    <text x="34" y="820" fill="#1F1B17" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Risk</text>
+    <text x="34" y="850" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Can shift the product toward travel journal.</text>
+  </g>
+
+  <g transform="translate(1226 272)">
+    <rect width="542" height="724" rx="36" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="102" fill="#1F1B17" font-size="34" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">C / Utility Warm Sans</text>
+    <text x="34" y="134" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Avenir Next with mono metrics.</text>
+    <text x="34" y="158" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Friendly, but less native.</text>
+
+    <rect x="34" y="198" width="474" height="178" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="238" fill="#A56E36" font-size="12" font-weight="700" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">ROUTE TITLE</text>
+    <text x="58" y="286" fill="#1E1E1A" font-size="40" font-weight="700" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">Copper Apex Loop</text>
+    <text x="58" y="318" fill="#6F6C66" font-size="16" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">Approachable. Softer.</text>
+
+    <rect x="34" y="396" width="474" height="136" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="434" fill="#A56E36" font-size="12" font-weight="700" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">RIDE METRICS</text>
+    <text x="58" y="484" fill="#1E1E1A" font-size="36" font-weight="700" font-family="Menlo, Monaco, monospace">92 min / 128 km / 78%</text>
+    <text x="58" y="512" fill="#6F6C66" font-size="15" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">Still clear. Less instrument-like overall.</text>
+
+    <rect x="34" y="552" width="474" height="102" rx="30" fill="#FCFBF8" filter="url(#shadowCard)"/>
+    <text x="58" y="590" fill="#A56E36" font-size="12" font-weight="700" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">CONTROL LABELS</text>
+    <text x="58" y="626" fill="#1E1E1A" font-size="20" font-weight="700" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif">Belgrade Waterfront</text>
+
+    <text x="34" y="694" fill="#1F1B17" font-size="22" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Why it can work</text>
+    <text x="34" y="728" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">1. Warm and approachable.</text>
+    <text x="34" y="756" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">2. Slightly more branded than pure system.</text>
+
+    <text x="34" y="820" fill="#1F1B17" font-size="20" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Risk</text>
+    <text x="34" y="850" fill="#6D655D" font-size="16" font-family="Helvetica Neue, Arial, sans-serif">Can drift away from Apple-native quality.</text>
+  </g>
+
+  <g transform="translate(74 1034)">
+    <rect width="1694" height="138" rx="34" fill="#FBF8F3" filter="url(#shadowCard)"/>
+    <text x="34" y="44" fill="#1F1B17" font-size="26" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">Typography rules to lock</text>
+    <text x="34" y="78" fill="#6D655D" font-size="17" font-family="Helvetica Neue, Arial, sans-serif">Use display sans for titles, system sans for UI, and mono digits only for ride data.</text>
+    <text x="34" y="106" fill="#A56E36" font-size="17" font-weight="700" font-family="Helvetica Neue, Arial, sans-serif">My recommendation: Direction A for the product. Direction B only for marketing or onboarding moments.</text>
+  </g>
+</svg>

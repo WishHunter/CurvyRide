@@ -3,6 +3,22 @@ import Factory
 import Foundation
 import MapKit
 
+enum PlannerStartPointFlowState: Equatable {
+  case idle
+  case locatingCurrentLocation
+  case searching(query: String)
+  case error(message: String)
+
+  var isBusy: Bool {
+    switch self {
+    case .locatingCurrentLocation, .searching:
+      return true
+    case .idle, .error:
+      return false
+    }
+  }
+}
+
 @MainActor
 final class PlannerModel: ObservableObject {
   @Injected(\.plannerSession) private var plannerSession
@@ -17,6 +33,7 @@ final class PlannerModel: ObservableObject {
   }
 
   @Published var settings: PlannerSettings = .init()
+  @Published private(set) var startPointFlowState: PlannerStartPointFlowState = .idle
   private var cancellables = Set<AnyCancellable>()
 
   init() {
@@ -94,32 +111,64 @@ final class PlannerModel: ObservableObject {
     } else if startPoint != nil {
       plannerSession.setStartPoint(startPoint, shouldRecenter: true)
     }
+    startPointFlowState = .idle
   }
 
   func useCurrentLocation() async {
-    guard let coordinate = await locationService.requestCurrentLocation() else { return }
+    startPointFlowState = .locatingCurrentLocation
+
+    guard let coordinate = await locationService.requestCurrentLocation() else {
+      startPointFlowState = .error(
+        message: "We could not access your current location. Search or pin a start instead."
+      )
+      return
+    }
+
     setStartPoint(
       PlannerStartPoint(
         latitude: coordinate.latitude,
         longitude: coordinate.longitude,
-        displayName: "My current location"
+        displayName: "Current location"
       )
     )
+    startPointFlowState = .idle
   }
 
-  func searchStartPoint(query: String) async -> PlannerStartPoint? {
+  func selectStartPoint(query: String) async -> Bool {
     let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard trimmed.isEmpty == false else { return nil }
+    guard trimmed.isEmpty == false else { return false }
+
+    startPointFlowState = .searching(query: trimmed)
 
     let request = MKLocalSearch.Request()
     request.naturalLanguageQuery = trimmed
 
-    return await resolveStartPoint(request: request, fallbackName: trimmed)
+    guard let startPoint = await resolveStartPoint(request: request, fallbackName: trimmed) else {
+      startPointFlowState = .error(
+        message: "We could not find '\(trimmed)'. Try another search or pin a start."
+      )
+      return false
+    }
+
+    setStartPoint(startPoint)
+    startPointFlowState = .idle
+    return true
   }
 
-  func searchStartPoint(completion: StartPointSearchCompletion) async -> PlannerStartPoint? {
+  func selectStartPoint(completion: StartPointSearchCompletion) async -> Bool {
+    startPointFlowState = .searching(query: completion.fullText)
     let request = MKLocalSearch.Request(completion: completion.completion)
-    return await resolveStartPoint(request: request, fallbackName: completion.title)
+
+    guard let startPoint = await resolveStartPoint(request: request, fallbackName: completion.title) else {
+      startPointFlowState = .error(
+        message: "We could not use '\(completion.fullText)'. Try another result or pin a start."
+      )
+      return false
+    }
+
+    setStartPoint(startPoint)
+    startPointFlowState = .idle
+    return true
   }
 
   private func resolveStartPoint(
@@ -156,10 +205,17 @@ final class PlannerModel: ObservableObject {
         ? PlannerStartPoint(
           latitude: Double.random(in: 44.70...44.95),
           longitude: Double.random(in: 20.20...20.65),
-          displayName: "Random Point"
+          displayName: "Random start"
         )
         : nil
     }
+
+    startPointFlowState = .idle
+  }
+
+  func clearStartPointFeedback() {
+    guard case .error = startPointFlowState else { return }
+    startPointFlowState = .idle
   }
 
   private func normalize(_ settings: inout PlannerSettings) {

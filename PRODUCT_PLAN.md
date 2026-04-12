@@ -143,6 +143,13 @@ Penalties:
 - `Start From`.
 - `Loop Ride`.
 
+### 5.4 UX/UI baseline timing
+- Sprint 1 explicitly includes UX/UI baseline for implemented screens (`HomeMapScreen`, `PlannerBottomSheet`):
+  - minimal design tokens (color/spacing/typography),
+  - interaction states (`loading/empty/error` + normal),
+  - aligned labels/microcopy for planner controls.
+- This baseline is required before expanding feature scope in Sprint 2+.
+
 ## 6. Technical Strategy
 
 ### 6.1 Proposed module structure
