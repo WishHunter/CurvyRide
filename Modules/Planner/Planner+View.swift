@@ -50,8 +50,12 @@ struct PlannerView: View {
     .safeAreaInset(edge: .bottom) {
       PlannerActionBarView(
         isClearDisabled: model.settings.startPoint == nil,
-        onClear: { model.setStartPoint(nil) },
-        onSurprise: model.applyRandomSettings,
+        onClear: {
+          model.send(.startPointSelected(nil))
+        },
+        onSurprise: {
+          model.send(.surpriseMeTapped)
+        },
         onApply: dismiss.callAsFunction
       )
       .padding(.horizontal, 12)
@@ -64,6 +68,11 @@ struct PlannerView: View {
     .presentationDragIndicator(.hidden)
     .tint(\.accent.primary)
     .onAppear(perform: syncMetricInputs)
+    .onChange(of: model.startPointFlowState) { oldValue, newValue in
+      if case .searching = oldValue, case .idle = newValue, model.settings.startPoint != nil {
+        searchService.clear()
+      }
+    }
     .onChange(of: model.settings.durationMinutes) { _, _ in
       guard focusedField != .duration else { return }
       durationInput = String(model.settings.durationMinutes)
@@ -102,12 +111,10 @@ struct PlannerView: View {
         completions: Array(searchService.completions.prefix(3)),
         onQueryChange: handleSearchQueryChange,
         onSubmit: handleSearchSubmit,
-        onSelectCompletion: { completion in
-          Task { await selectCompletion(completion) }
-        },
+        onSelectCompletion: model.sendCompletion,
         onChooseOnMap: handleChooseOnMap,
         onUseCurrentLocation: {
-          Task { await model.useCurrentLocation() }
+          model.send(.useCurrentLocationTapped)
         }
       )
       
@@ -129,7 +136,7 @@ struct PlannerView: View {
         Slider(
           value: Binding(
             get: { Double(model.settings.durationMinutes) },
-            set: { model.setDuration(Int($0.rounded())) }
+            set: { model.send(.durationChanged(Int($0.rounded()))) }
           ),
           in: Double(durationRange.lowerBound)...Double(durationRange.upperBound),
           step: 5
@@ -140,7 +147,7 @@ struct PlannerView: View {
         routeTypeSummary: model.settings.isLoopRoute ? "Loop" : "Point-to-Point",
         isLoopRoute: Binding(
           get: { model.settings.isLoopRoute },
-          set: { model.set($0, for: \.isLoopRoute) }
+          set: { model.send(.toggleChanged(.loopRoute, $0)) }
         )
       )
     }
@@ -172,7 +179,7 @@ struct PlannerView: View {
           subtitle: model.settings.distanceLimitKm.map { "\($0) km" } ?? "Off",
           isOn: Binding(
             get: { model.settings.distanceLimitKm != nil },
-            set: { model.setDistanceLimitEnabled($0) }
+            set: { model.send(.distanceLimitToggled($0)) }
           )
         )
 
@@ -180,7 +187,7 @@ struct PlannerView: View {
           Slider(
             value: Binding(
               get: { Double(model.settings.distanceLimitKm ?? 25) },
-              set: { model.setDistanceLimit(Int($0.rounded())) }
+              set: { model.send(.distanceLimitChanged(Int($0.rounded()))) }
             ),
             in: Double(distanceRange.lowerBound)...Double(distanceRange.upperBound),
             step: 1
@@ -197,7 +204,7 @@ struct PlannerView: View {
           subtitle: model.settings.isLoopRoute ? nil : "Loop only",
           isOn: Binding(
             get: { model.settings.isFastReturn },
-            set: { model.set($0, for: \.isFastReturn) }
+            set: { model.send(.toggleChanged(.fastReturn, $0)) }
           ),
           isDisabled: model.settings.isLoopRoute == false
         )
@@ -206,11 +213,11 @@ struct PlannerView: View {
       PlannerRoadPreferencesCardView(
         avoidHighways: Binding(
           get: { model.settings.avoidHighways },
-          set: { model.set($0, for: \.avoidHighways) }
+          set: { model.send(.toggleChanged(.avoidHighways, $0)) }
         ),
         avoidTolls: Binding(
           get: { model.settings.avoidTolls },
-          set: { model.set($0, for: \.avoidTolls) }
+          set: { model.send(.toggleChanged(.avoidTolls, $0)) }
         )
       )
     }
@@ -238,7 +245,7 @@ struct PlannerView: View {
         durationInput = filtered
 
         guard let value = Int(filtered) else { return }
-        model.setDuration(value)
+        model.send(.durationChanged(value))
       }
     )
   }
@@ -251,7 +258,7 @@ struct PlannerView: View {
         distanceLimitInput = filtered
 
         guard let value = Int(filtered) else { return }
-        model.setDistanceLimit(value)
+        model.send(.distanceLimitChanged(value))
       }
     )
   }
@@ -285,49 +292,52 @@ struct PlannerView: View {
         message: message,
         tone: .error,
         actionTitle: "OK",
-        action: model.clearStartPointFeedback
+        action: {
+          model.send(.clearStartPointFeedback)
+        }
       )
     }
   }
 
   private func handleSearchSubmit() {
-    Task {
-      if let completion = searchService.completions.first {
-        await selectCompletion(completion)
-      } else if await model.selectStartPoint(query: searchService.query) {
-        searchService.clear()
-      }
+    if let completion = searchService.completions.first {
+      model.sendCompletion(completion)
+    } else {
+      model.send(.searchSubmitted(searchService.query))
     }
   }
 
   private func handleSearchQueryChange(_ value: String) {
-    model.clearStartPointFeedback()
+    model.send(.clearStartPointFeedback)
     searchService.updateQuery(value)
   }
 
   private func handleChooseOnMap() {
-    model.clearStartPointFeedback()
+    model.send(.clearStartPointFeedback)
     onPickStartPointOnMap()
   }
 
-  private func selectCompletion(_ completion: StartPointSearchCompletion) async {
-    if await model.selectStartPoint(completion: completion) {
-      searchService.clear()
-    }
-  }
+}
 
-  private func normalizedProgress(value: Double, range: ClosedRange<Double>) -> Double {
+private extension PlannerModel {
+  func sendCompletion(_ completion: StartPointSearchCompletion) {
+    send(.searchCompletionSelected(completion))
+  }
+}
+
+private extension PlannerView {
+  func normalizedProgress(value: Double, range: ClosedRange<Double>) -> Double {
     guard range.upperBound > range.lowerBound else { return 0 }
     let normalized = (value - range.lowerBound) / (range.upperBound - range.lowerBound)
     return min(max(normalized, 0), 1)
   }
 
-  private func syncMetricInputs() {
+  func syncMetricInputs() {
     durationInput = String(model.settings.durationMinutes)
     distanceLimitInput = model.settings.distanceLimitKm.map(String.init) ?? ""
   }
 
-  private func filteredNumericText(_ text: String, maximumLength: Int) -> String {
+  func filteredNumericText(_ text: String, maximumLength: Int) -> String {
     String(text.filter(\.isNumber).prefix(maximumLength))
   }
 }

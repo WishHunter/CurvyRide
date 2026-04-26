@@ -53,6 +53,7 @@ targets:
       - path: Tests/CurvyRideAppTests
     settings:
       base:
+        GENERATE_INFOPLIST_FILE: true
         SWIFT_VERSION: 5.0
     dependencies:
       - target: CurvyRideApp

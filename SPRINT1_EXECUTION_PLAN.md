@@ -154,11 +154,14 @@ Implement:
 - `UserDefaultsStore.swift` abstraction wrapper.
 - `PlannerSession.swift` owns load/save of `PlannerSettings` via `UserDefaultsStore`.
 - `Planner+Model.swift` does not talk to storage directly; it only validates and updates session state.
-- Data encoding/decoding for planner settings with migration-safe default mapping.
+- Persist planner defaults only (`durationMinutes`, `distanceLimitKm`, route toggles).
+- `startPoint` remains runtime-only and is not restored from persistence.
+- Data encoding/decoding falls back to in-app defaults when storage is empty or corrupt.
 
 Acceptance:
 - Planner defaults persist between app launches.
 - Default for first launch is `durationMinutes = 60`, `distanceLimitKm = nil`.
+- `startPoint` is bootstrapped fresh on launch and is not persisted as a default.
 
 ### 2.6 Start point selection shell
 Implement:
@@ -198,9 +201,9 @@ Acceptance:
 - [ ] Add `LoadableState` helper (if needed for async loading).
 
 ### 4.3 Repository and storage
-- [ ] Add `UserDefaultsStore`.
-- [ ] Add planner settings serialization keys and migration-safe default mapping.
-- [ ] Wire `PlannerSession` to load/save settings via store.
+- [x] Add `UserDefaultsStore`.
+- [x] Add planner settings serialization keys and safe default fallback for empty/corrupt storage.
+- [x] Wire `PlannerSession` to load/save planner defaults via store.
 
 ### 4.4 ViewModels
 - [x] Add planner state holder in `Planner+Model` with `@Published state`.
@@ -223,9 +226,10 @@ Acceptance:
   - default state on first launch
   - toggle mutations with validation
   - writes validated values into session
-- [ ] `PlannerSessionTests`:
+- [x] `PlannerSessionTests`:
   - persistence roundtrip via store
   - fallback defaults when storage is empty/corrupt
+  - `startPoint` is not persisted
 - [ ] `MapsModelTests`:
   - reacts to `PlannerSession.settings` updates
 
@@ -249,15 +253,16 @@ Manual smoke:
 3. Set duration to non-default.
 4. Set start point via search or `My current location` or `Show on map`.
 5. Close app and relaunch.
-6. Verify values restored.
+6. Verify planner defaults restored.
+7. Verify `startPoint` is not restored from persistence and is bootstrapped fresh.
 
 ## 6. Definition of Done (Sprint 1)
 
 - Project compiles cleanly on iOS 17 simulator.
 - Home map screen and planner sheet are functional.
 - UX/UI baseline for implemented Sprint 1 screens is defined and applied (tokens, labels, interaction states).
-- Planner state persists across relaunch.
-- Start point is selectable and persisted.
+- Planner defaults persist across relaunch.
+- Start point is selectable and reflected during the current session.
 - Unit tests for planner model/session pass.
 - No P1 bugs in Sprint 1 scope.
 

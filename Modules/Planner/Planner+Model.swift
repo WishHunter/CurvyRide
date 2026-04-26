@@ -3,6 +3,26 @@ import Factory
 import Foundation
 import MapKit
 
+enum PlannerToggle {
+  case loopRoute
+  case fastReturn
+  case avoidHighways
+  case avoidTolls
+}
+
+enum PlannerAction {
+  case durationChanged(Int)
+  case distanceLimitChanged(Int?)
+  case distanceLimitToggled(Bool)
+  case toggleChanged(PlannerToggle, Bool)
+  case startPointSelected(PlannerStartPoint?)
+  case useCurrentLocationTapped
+  case searchSubmitted(String)
+  case searchCompletionSelected(StartPointSearchCompletion)
+  case clearStartPointFeedback
+  case surpriseMeTapped
+}
+
 enum PlannerStartPointFlowState: Equatable {
   case idle
   case locatingCurrentLocation
@@ -23,6 +43,7 @@ enum PlannerStartPointFlowState: Equatable {
 final class PlannerModel: ObservableObject {
   @Injected(\.plannerSession) private var plannerSession
   private let locationService = CurrentLocationService()
+  private var startPointTask: Task<Void, Never>?
 
   private enum Limits {
     static let minDurationMinutes: Int = 10
@@ -48,7 +69,38 @@ final class PlannerModel: ObservableObject {
       .store(in: &cancellables)
   }
 
-  func update(_ mutate: (inout PlannerSettings) -> Void) {
+  func send(_ action: PlannerAction) {
+    switch action {
+    case .durationChanged(let durationMinutes):
+      setDuration(durationMinutes)
+    case .distanceLimitChanged(let distanceLimitKm):
+      setDistanceLimit(distanceLimitKm)
+    case .distanceLimitToggled(let isEnabled):
+      setDistanceLimitEnabled(isEnabled)
+    case .toggleChanged(let toggle, let isOn):
+      set(isOn, for: toggle)
+    case .startPointSelected(let startPoint):
+      setStartPoint(startPoint)
+    case .useCurrentLocationTapped:
+      runStartPointTask { [weak self] in
+        await self?.useCurrentLocation()
+      }
+    case .searchSubmitted(let query):
+      runStartPointTask { [weak self] in
+        _ = await self?.selectStartPoint(query: query)
+      }
+    case .searchCompletionSelected(let completion):
+      runStartPointTask { [weak self] in
+        _ = await self?.selectStartPoint(completion: completion)
+      }
+    case .clearStartPointFeedback:
+      clearStartPointFeedback()
+    case .surpriseMeTapped:
+      applyRandomSettings()
+    }
+  }
+
+  private func update(_ mutate: (inout PlannerSettings) -> Void) {
     var copy = settings
     mutate(&copy)
     normalize(&copy)
@@ -61,7 +113,7 @@ final class PlannerModel: ObservableObject {
     }
   }
 
-  func setDuration(_ durationMinutes: Int) {
+  private func setDuration(_ durationMinutes: Int) {
     update {
       $0.durationMinutes = max(
         Limits.minDurationMinutes,
@@ -70,7 +122,7 @@ final class PlannerModel: ObservableObject {
     }
   }
 
-  func setDistanceLimit(_ distanceLimitKm: Int?) {
+  private func setDistanceLimit(_ distanceLimitKm: Int?) {
     update {
       guard let distanceLimitKm else {
         $0.distanceLimitKm = nil
@@ -84,7 +136,7 @@ final class PlannerModel: ObservableObject {
     }
   }
 
-  func setDistanceLimitEnabled(_ isEnabled: Bool) {
+  private func setDistanceLimitEnabled(_ isEnabled: Bool) {
     if isEnabled {
       setDistanceLimit(settings.distanceLimitKm ?? Limits.defaultDistanceLimitKm)
     } else {
@@ -92,13 +144,26 @@ final class PlannerModel: ObservableObject {
     }
   }
 
-  func set(_ value: Bool, for keyPath: WritableKeyPath<PlannerSettings, Bool>) {
+  private func set(_ value: Bool, for keyPath: WritableKeyPath<PlannerSettings, Bool>) {
     update {
       $0[keyPath: keyPath] = value
     }
   }
 
-  func setStartPoint(_ startPoint: PlannerStartPoint?) {
+  private func set(_ value: Bool, for toggle: PlannerToggle) {
+    switch toggle {
+    case .loopRoute:
+      set(value, for: \.isLoopRoute)
+    case .fastReturn:
+      set(value, for: \.isFastReturn)
+    case .avoidHighways:
+      set(value, for: \.avoidHighways)
+    case .avoidTolls:
+      set(value, for: \.avoidTolls)
+    }
+  }
+
+  private func setStartPoint(_ startPoint: PlannerStartPoint?) {
     var copy = settings
     copy.startPoint = startPoint
     normalize(&copy)
@@ -114,7 +179,7 @@ final class PlannerModel: ObservableObject {
     startPointFlowState = .idle
   }
 
-  func useCurrentLocation() async {
+  private func useCurrentLocation() async {
     startPointFlowState = .locatingCurrentLocation
 
     guard let coordinate = await locationService.requestCurrentLocation() else {
@@ -134,7 +199,7 @@ final class PlannerModel: ObservableObject {
     startPointFlowState = .idle
   }
 
-  func selectStartPoint(query: String) async -> Bool {
+  private func selectStartPoint(query: String) async -> Bool {
     let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
     guard trimmed.isEmpty == false else { return false }
 
@@ -155,7 +220,7 @@ final class PlannerModel: ObservableObject {
     return true
   }
 
-  func selectStartPoint(completion: StartPointSearchCompletion) async -> Bool {
+  private func selectStartPoint(completion: StartPointSearchCompletion) async -> Bool {
     startPointFlowState = .searching(query: completion.fullText)
     let request = MKLocalSearch.Request(completion: completion.completion)
 
@@ -193,7 +258,7 @@ final class PlannerModel: ObservableObject {
     }
   }
 
-  func applyRandomSettings() {
+  private func applyRandomSettings() {
     update {
       $0.durationMinutes = Int.random(in: Limits.minDurationMinutes...Limits.maxDurationMinutes)
       $0.distanceLimitKm = Bool.random() ? Int.random(in: Limits.minDistanceLimitKm...Limits.maxDistanceLimitKm) : nil
@@ -213,9 +278,16 @@ final class PlannerModel: ObservableObject {
     startPointFlowState = .idle
   }
 
-  func clearStartPointFeedback() {
+  private func clearStartPointFeedback() {
     guard case .error = startPointFlowState else { return }
     startPointFlowState = .idle
+  }
+
+  private func runStartPointTask(_ operation: @escaping @MainActor () async -> Void) {
+    startPointTask?.cancel()
+    startPointTask = Task { @MainActor in
+      await operation()
+    }
   }
 
   private func normalize(_ settings: inout PlannerSettings) {

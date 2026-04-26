@@ -18,9 +18,9 @@
 		21D491B55D9160A75E7EB8DC /* Maps+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B96DBEC072426E26B15B727 /* Maps+View.swift */; };
 		3D601E229A9C9B7D4F848324 /* PlannerControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA628D4DDF1E8DD2EBAA64DD /* PlannerControls.swift */; };
 		3E1AA76208C8E7A9431CE9F2 /* PlannerShellViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02046B7A38282B8F7219E875 /* PlannerShellViews.swift */; };
+		4243BACCAF15DE1B6180F23D /* UserDefaultsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01048CE2E53731D57F91E8F9 /* UserDefaultsStore.swift */; };
 		4A40DED7CFB8399627A1776F /* DSButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A18D425803653FFA11296A /* DSButton.swift */; };
 		577694E09A2506AAFA963704 /* PlannerSettingsCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C7466BC1BC56D22C78A14E /* PlannerSettingsCards.swift */; };
-		5C7DE5F5ED319F988B20CFD3 /* Container+Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F6F302D5D4D57C97F43DB5 /* Container+Dependencies.swift */; };
 		5E58C152206B645FCA13AE1C /* CurvyRideAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434EEB44ED127267173564ED /* CurvyRideAppTests.swift */; };
 		60E8D6C8660F55F7307CFB66 /* PlannerStartPointCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E1B8320D1B2B80FDA0C628 /* PlannerStartPointCardView.swift */; };
 		62B64FB8001B1075C89DA13D /* Planner+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14E6AA66EF7B4FDDD78443 /* Planner+View.swift */; };
@@ -30,6 +30,7 @@
 		8F05B4852665747D5053C832 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D71B4E569B67108902F8262 /* UIColor+.swift */; };
 		948EEF12044A2B5B83724E08 /* PlannerSummaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B8279D9A48512023497B7B /* PlannerSummaryViews.swift */; };
 		98F1D0BED7BD4AFC7D28D6BE /* Bug.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDCD2AEA29B0755F1EA43874 /* Bug.swift */; };
+		A1A2E9E77CF23AB40F971ED1 /* PlannerSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF9163F074FADA5BB88990 /* PlannerSessionTests.swift */; };
 		A6A684A97C5924B84FB877C9 /* Shadows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60328C5316EB9A9774FE889D /* Shadows.swift */; };
 		A728129BEA82B8474EBCA8B6 /* Maps+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B23FD49182F1734FD81500 /* Maps+Model.swift */; };
 		AC855F901A5BD8E161FADFA2 /* DSSurfaceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A08AE7C5833F7A992A7402C /* DSSurfaceCard.swift */; };
@@ -51,16 +52,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01048CE2E53731D57F91E8F9 /* UserDefaultsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStore.swift; sourceTree = "<group>"; };
 		02046B7A38282B8F7219E875 /* PlannerShellViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerShellViews.swift; sourceTree = "<group>"; };
 		0B3DE905D64077EA643553B6 /* FromInfoPlistOrFatal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromInfoPlistOrFatal.swift; sourceTree = "<group>"; };
 		12FE41EAC9A5C2B88A4A090A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		14CF9163F074FADA5BB88990 /* PlannerSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerSessionTests.swift; sourceTree = "<group>"; };
 		16A999D29FB0C79CE8B3FBC6 /* StartPointSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPointSearchService.swift; sourceTree = "<group>"; };
 		1A662C1095C736D1E16084D1 /* Radii.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radii.swift; sourceTree = "<group>"; };
 		28EBC69B224CA7ADC28ECB7B /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		323C21785EE2708CA850ABDD /* PlannerCardComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerCardComponents.swift; sourceTree = "<group>"; };
 		434EEB44ED127267173564ED /* CurvyRideAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvyRideAppTests.swift; sourceTree = "<group>"; };
 		53B23FD49182F1734FD81500 /* Maps+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Maps+Model.swift"; sourceTree = "<group>"; };
-		58F6F302D5D4D57C97F43DB5 /* Container+Dependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Container+Dependencies.swift"; sourceTree = "<group>"; };
 		5A08AE7C5833F7A992A7402C /* DSSurfaceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSSurfaceCard.swift; sourceTree = "<group>"; };
 		60328C5316EB9A9774FE889D /* Shadows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadows.swift; sourceTree = "<group>"; };
 		67DF550C7AA012DED5C315BA /* PlannerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerSession.swift; sourceTree = "<group>"; };
@@ -121,11 +123,20 @@
 			path = Modules;
 			sourceTree = "<group>";
 		};
+		4110F743B5652F86D258E869 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				01048CE2E53731D57F91E8F9 /* UserDefaultsStore.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		43831B097B5C40B8935BDD1D /* Data */ = {
 			isa = PBXGroup;
 			children = (
 				EB4C93945E8E014952015F9F /* Services */,
 				A0B502CFEB4D33E4D0CDAC3A /* Sessions */,
+				4110F743B5652F86D258E869 /* Storage */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -134,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				434EEB44ED127267173564ED /* CurvyRideAppTests.swift */,
+				14CF9163F074FADA5BB88990 /* PlannerSessionTests.swift */,
 			);
 			name = CurvyRideAppTests;
 			path = Tests/CurvyRideAppTests;
@@ -153,7 +165,6 @@
 		6C483AFBE83844C2CBC4EE3F /* AppCore */ = {
 			isa = PBXGroup;
 			children = (
-				8673BEA578B829E788C792B9 /* DI */,
 				C4043F04C385BB1EDACFAC19 /* Utils */,
 			);
 			path = AppCore;
@@ -176,14 +187,6 @@
 				C6A9F4C1D682CB5E6E793BF7 /* Theme */,
 			);
 			path = DesignSystem;
-			sourceTree = "<group>";
-		};
-		8673BEA578B829E788C792B9 /* DI */ = {
-			isa = PBXGroup;
-			children = (
-				58F6F302D5D4D57C97F43DB5 /* Container+Dependencies.swift */,
-			);
-			path = DI;
 			sourceTree = "<group>";
 		};
 		877343CC4C40B16621F3138E /* Views */ = {
@@ -359,7 +362,6 @@
 			files = (
 				98F1D0BED7BD4AFC7D28D6BE /* Bug.swift in Sources */,
 				13AC13C7E1C16CD54813981B /* Colors.swift in Sources */,
-				5C7DE5F5ED319F988B20CFD3 /* Container+Dependencies.swift in Sources */,
 				F8B46A3B17AA5D093AFBCC3E /* CurrentLocationService.swift in Sources */,
 				0CDE210D0E0C986DC5C24791 /* CurvyRideApp.swift in Sources */,
 				4A40DED7CFB8399627A1776F /* DSButton.swift in Sources */,
@@ -385,6 +387,7 @@
 				A6A684A97C5924B84FB877C9 /* Shadows.swift in Sources */,
 				0E563B2A81101F6362552AAD /* StartPointSearchService.swift in Sources */,
 				8F05B4852665747D5053C832 /* UIColor+.swift in Sources */,
+				4243BACCAF15DE1B6180F23D /* UserDefaultsStore.swift in Sources */,
 				7F843605B1FDED913A5D3E19 /* View+DS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E58C152206B645FCA13AE1C /* CurvyRideAppTests.swift in Sources */,
+				A1A2E9E77CF23AB40F971ED1 /* PlannerSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +437,7 @@
 			baseConfigurationReference = 28EBC69B224CA7ADC28ECB7B /* Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -534,6 +539,7 @@
 			baseConfigurationReference = C69D0FDA0073014452433B09 /* Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

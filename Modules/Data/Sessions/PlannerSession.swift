@@ -1,6 +1,6 @@
 import Combine
-import Foundation
 import Factory
+import Foundation
 
 extension Container {
   var plannerSession: Factory<PlannerSession> {
@@ -15,18 +15,75 @@ enum StartPointBootstrapState: Equatable {
 }
 
 final class PlannerSession: ObservableObject {
-  private let locationService = CurrentLocationService()
+  private let userDefaultsStore: UserDefaultsStore
+  private let locationService: CurrentLocationService
+  private let encoder = JSONEncoder()
+  private let decoder = JSONDecoder()
+
+  private enum StorageKeys {
+    static let plannerDefaults = "planner.defaults"
+  }
+
+  private struct StoredPlannerDefaults: Codable {
+    var durationMinutes: Int
+    var distanceLimitKm: Int?
+    var isLoopRoute: Bool
+    var isFastReturn: Bool
+    var avoidHighways: Bool
+    var avoidTolls: Bool
+
+    init(settings: PlannerSettings) {
+      durationMinutes = settings.durationMinutes
+      distanceLimitKm = settings.distanceLimitKm
+      isLoopRoute = settings.isLoopRoute
+      isFastReturn = settings.isFastReturn
+      avoidHighways = settings.avoidHighways
+      avoidTolls = settings.avoidTolls
+    }
+
+    func makeSettings() -> PlannerSettings {
+      PlannerSettings(
+        durationMinutes: durationMinutes,
+        distanceLimitKm: distanceLimitKm,
+        isLoopRoute: isLoopRoute,
+        isFastReturn: isFastReturn,
+        avoidHighways: avoidHighways,
+        avoidTolls: avoidTolls
+      )
+    }
+  }
 
   @Published var settings: PlannerSettings = .init()
   @Published private(set) var recenterRequest: PlannerRecenterRequest?
   @Published private(set) var startPointBootstrapState: StartPointBootstrapState = .resolving
 
-  init() {
-    bootstrapInitialStartPoint()
+  init(
+    userDefaultsStore: UserDefaultsStore,
+    locationService: CurrentLocationService,
+    shouldBootstrapStartPoint: Bool
+  ) {
+    self.userDefaultsStore = userDefaultsStore
+    self.locationService = locationService
+    settings = loadStoredDefaults()
+
+    if shouldBootstrapStartPoint {
+      bootstrapInitialStartPoint()
+    } else {
+      startPointBootstrapState = settings.startPoint == nil ? .unavailable : .ready
+    }
+  }
+
+  convenience init() {
+    self.init(
+      userDefaultsStore: Container.shared.userDefaultsStore(),
+      locationService: CurrentLocationService(),
+      shouldBootstrapStartPoint: true
+    )
   }
 
   func applySettings(_ newSettings: PlannerSettings, recenterOnStartPoint: Bool = false) {
     settings = newSettings
+    saveStoredDefaults(from: newSettings)
 
     if newSettings.startPoint != nil {
       startPointBootstrapState = .ready
@@ -75,6 +132,30 @@ final class PlannerSession: ObservableObject {
         )
         self.startPointBootstrapState = .ready
       }
+    }
+  }
+
+  private func loadStoredDefaults() -> PlannerSettings {
+    guard let data = userDefaultsStore.data(forKey: StorageKeys.plannerDefaults) else {
+      return .init()
+    }
+
+    do {
+      let storedDefaults = try decoder.decode(StoredPlannerDefaults.self, from: data)
+      return storedDefaults.makeSettings()
+    } catch {
+      userDefaultsStore.removeValue(forKey: StorageKeys.plannerDefaults)
+      return .init()
+    }
+  }
+
+  private func saveStoredDefaults(from settings: PlannerSettings) {
+    do {
+      let storedDefaults = StoredPlannerDefaults(settings: settings)
+      let data = try encoder.encode(storedDefaults)
+      userDefaultsStore.set(data, forKey: StorageKeys.plannerDefaults)
+    } catch {
+      userDefaultsStore.removeValue(forKey: StorageKeys.plannerDefaults)
     }
   }
 }
